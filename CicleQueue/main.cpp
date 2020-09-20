@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -20,19 +22,10 @@ class Queue
 		_indexIfQueueIsFull = 0;
 		_memory = new string[_maxSize];
 	}
-	
-	Queue(const Queue& q)
-	{
-		_maxSize = q._maxSize;
-		_countElements = q._countElements;
-		_currentIndex = q._currentIndex;
-		_indexIfQueueIsFull = q._indexIfQueueIsFull;
-		_memory = q._memory;
-	}
 
 	~Queue()
 	{
-		Clear();
+		delete[] _memory;
 	}
 
 	public:
@@ -98,7 +91,7 @@ class Queue
 		_countElements = 0;
 		_currentIndex = 0;
 		_indexIfQueueIsFull = 0;
-		delete _memory;
+		_memory = new string[_maxSize];
 	}
 	
 	string Peek()
@@ -140,14 +133,13 @@ class Queue
 
 int main()
 {
+	setlocale(LC_ALL, "ru");
 	Queue q1(3);
 
 	q1.Enqueue("1");
 	q1.Enqueue("22");
 	
 	cout << q1.GetSizeFront() << endl;
-
-	Queue q2(q1);
 	
 	q1.Dequeue();
 
@@ -157,42 +149,23 @@ int main()
 
 	q1.Clear();
 
+	string line;
+	fstream fromFile("file.txt");
 
+	Queue q3(100);
+	if(fromFile.is_open())
+	{
+		while(getline(fromFile, line))
+		{
+			q3.Enqueue(line);
+		}
+	}
+	else
+	{
+		cout << "File is not found!" << endl;
+	}
+	fromFile.close();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//CicleQueue q(3);
-	//q.Enqueue("1123123");
-	//q.Enqueue("22");
-	//q.Enqueue("333");
-	////q.ShowInfo();
-	//
-	////cout << q.GetFrontSize() << endl;
-
-	///*string* value;
-	//q.CopyFromFront(value);
-	//cout << value << endl;*/
-	//
-	////q.Dequeue();
-
-	//q.Clear();
-
-	//cout << << endl;
+	q3.ShowInfo();
 	return 0;
 }
